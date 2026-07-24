@@ -48,8 +48,7 @@
     </div>
   </footer>
 
- <script>
-    // Append ?tab=Execom to your existing script URL
+<script>
     const EXECOM_API_URL = 'https://script.google.com/macros/s/AKfycbxkkzGS8mEcLY0qJiwbIPaNBaRO2hbm0Dz-mVj1d4wJdqrTZWrVLJo9F7xFTNqnbP87Lg/exec?tab=Execom'; 
 
     function getDirectDriveImageUrl(url) {
@@ -63,42 +62,58 @@
       return trimmed;
     }
 
+    // Extracted the rendering logic into its own function
+    function renderExecomGrid(data) {
+      const grid = document.getElementById('execomGrid');
+      grid.innerHTML = ''; 
+      
+      data.forEach((member, index) => {
+        if(!member.name) return; 
+
+        const imgUrl = getDirectDriveImageUrl(member.image);
+        const delay = (index % 4) * 0.1; 
+
+        const tileHTML = `
+          <div class="execom-card" style="animation: slideFadeIn 0.4s ease-in-out forwards; animation-delay: ${delay}s; opacity: 0;">
+            <div class="execom-photo-wrap">
+              <img class="execom-photo" src="${imgUrl}" alt="${member.name}" onerror="this.parentElement.innerHTML='<div class=\\'team-photo-placeholder\\'>👨‍💻</div>'">
+            </div>
+            <div class="execom-info">
+              <div class="execom-name">${member.name}</div>
+              <div class="execom-role">${member.role}</div>
+              ${member.linkedin ? `<a class="execom-linkedin" href="${member.linkedin}" target="_blank">🔗 LinkedIn</a>` : ''}
+            </div>
+          </div>
+        `;
+        
+        grid.innerHTML += tileHTML;
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const grid = document.getElementById('execomGrid');
       
-      fetch(EXECOM_API_URL)
-        .then(response => response.json())
-        .then(data => {
-          grid.innerHTML = ''; 
-          
-          data.forEach((member, index) => {
-            // Note: Using lowercase properties (name, role, image, linkedin) 
-            // because your Apps Script maps all headers to lowercase!
-            if(!member.name) return; 
-
-            const imgUrl = getDirectDriveImageUrl(member.image);
-            const delay = (index % 4) * 0.1; 
-
-            const tileHTML = `
-              <div class="execom-card" style="animation: slideFadeIn 0.4s ease-in-out forwards; animation-delay: ${delay}s; opacity: 0;">
-                <div class="execom-photo-wrap">
-                  <img class="execom-photo" src="${imgUrl}" alt="${member.name}" onerror="this.parentElement.innerHTML='<div class=\\'team-photo-placeholder\\'>👨‍💻</div>'">
-                </div>
-                <div class="execom-info">
-                  <div class="execom-name">${member.name}</div>
-                  <div class="execom-role">${member.role}</div>
-                  ${member.linkedin ? `<a class="execom-linkedin" href="${member.linkedin}" target="_blank">🔗 LinkedIn</a>` : ''}
-                </div>
-              </div>
-            `;
-            
-            grid.innerHTML += tileHTML;
+      // 1. Check if the browser already has the data saved
+      const cachedExecomData = sessionStorage.getItem('execomData');
+      
+      if (cachedExecomData) {
+        // Render instantly from local storage
+        renderExecomGrid(JSON.parse(cachedExecomData));
+      } else {
+        // 2. If not, fetch from Google Script
+        fetch(EXECOM_API_URL)
+          .then(response => response.json())
+          .then(data => {
+            // Save it to the browser for next time
+            sessionStorage.setItem('execomData', JSON.stringify(data));
+            // Render the grid
+            renderExecomGrid(data);
+          })
+          .catch(error => {
+            console.error('Error fetching Execom data:', error);
+            grid.innerHTML = `<p style="text-align: center; color: #ff5252; grid-column: 1 / -1;">Failed to load data. Please check the API connection.</p>`;
           });
-        })
-        .catch(error => {
-          console.error('Error fetching Execom data:', error);
-          grid.innerHTML = `<p style="text-align: center; color: #ff5252; grid-column: 1 / -1;">Failed to load data. Please check the API connection.</p>`;
-        });
+      }
     });
   </script>
 </body>
