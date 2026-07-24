@@ -23,89 +23,19 @@
     <a class="nav-cta" href="https://mulearn.org" target="_blank">Join MuLearn</a>
   </nav>
 
-  <!-- Execom Section -->
+ <!-- Execom Section (Dynamic) -->
   <section id="execom" style="padding-top: 140px; min-height: 100vh;">
     <div class="wrap">
-      <div class="section-eyebrow ">Leadership</div>
-      <h2 class="section-heading ">Our <span class="accent">Execom</span></h2>
+      <div class="section-eyebrow">Leadership</div>
+      <h2 class="section-heading">Our <span class="accent">Execom</span></h2>
       
-      <div class="execom-grid">
-        
-        <!-- Tile 1 -->
-        <div class="execom-card ">
-          <div class="execom-photo-wrap">
-            <img class="execom-photo" src="bindima.jpeg" alt="Member Name" onerror="this.parentElement.innerHTML='<div class=team-photo-placeholder>👨‍💻</div>'">
-          </div>
-          <div class="execom-info">
-            <div class="execom-name">Dr. Bindima</div>
-            <div class="execom-role">Campus Advisor</div>
-            <a class="execom-linkedin" href="https://linkedin.com/in/username" target="_blank">🔗 LinkedIn</a>
-          </div>
-        </div>
-
-        <!-- Tile 2 -->
-        <div class="execom-card " style="transition-delay:0.1s">
-          <div class="execom-photo-wrap">
-            <img class="execom-photo" src="naem.jpeg" alt="Member Name" onerror="this.parentElement.innerHTML='<div class=team-photo-placeholder>👩‍💻</div>'">
-          </div>
-          <div class="execom-info">
-            <div class="execom-name">Naeem Ahammed</div>
-            <div class="execom-role">Alumni Member</div>
-            <a class="execom-linkedin" href="https://linkedin.com/in/username" target="_blank">🔗 LinkedIn</a>
-          </div>
-        </div>
-        <!-- Tile3 -->
-        <div class="execom-card " style="transition-delay:0.1s">
-          <div class="execom-photo-wrap">
-            <img class="execom-photo" src="neha.jpeg" alt="Member Name" onerror="this.parentElement.innerHTML='<div class=team-photo-placeholder>👩‍💻</div>'">
-          </div>
-          <div class="execom-info">
-            <div class="execom-name">Neha T K</div>
-            <div class="execom-role">Mentor</div>
-            <a class="execom-linkedin" href="https://linkedin.com/in/username" target="_blank">🔗 LinkedIn</a>
-          </div>
-        </div>
-
-          <!-- Tile 4 -->
-        <div class="execom-card " style="transition-delay:0.1s">
-          <div class="execom-photo-wrap">
-            <img class="execom-photo" src="vimal.jpg" alt="Member Name" onerror="this.parentElement.innerHTML='<div class=team-photo-placeholder>👩‍💻</div>'">
-          </div>
-          <div class="execom-info">
-            <div class="execom-name">Vimal John M V</div>
-            <div class="execom-role">Campus Lead</div>
-            <a class="execom-linkedin" href="https://linkedin.com/in/username" target="_blank">🔗 LinkedIn</a>
-          </div>
-        </div>
-
-          <!-- Tile 5 -->
-        <!-- <div class="execom-card reveal" style="transition-delay:0.1s">
-          <div class="execom-photo-wrap">
-            <img class="execom-photo" src="member2.jpg" alt="Member Name" onerror="this.parentElement.innerHTML='<div class=team-photo-placeholder>👩‍💻</div>'">
-          </div>
-          <div class="execom-info">
-            <div class="execom-name">Member Name</div>
-            <div class="execom-role">Designation</div>
-            <a class="execom-linkedin" href="https://linkedin.com/in/username" target="_blank">🔗 LinkedIn</a>
-          </div>
-        </div> -->
-
-        
-        <!-- Tile 6 -->
-        <!-- <div class="execom-card reveal" style="transition-delay:0.1s">
-          <div class="execom-photo-wrap">
-            <img class="execom-photo" src="member2.jpg" alt="Member Name" onerror="this.parentElement.innerHTML='<div class=team-photo-placeholder>👩‍💻</div>'">
-          </div>
-          <div class="execom-info">
-            <div class="execom-name">Member Name</div>
-            <div class="execom-role">Designation</div>
-            <a class="execom-linkedin" href="https://linkedin.com/in/username" target="_blank">🔗 LinkedIn</a>
-          </div>
-        </div> -->
-
-        <!-- Add more tiles as needed by copy-pasting the block above -->
-
+      <!-- We added the id="execomGrid" here -->
+      <div class="execom-grid" id="execomGrid">
+        <p style="text-align: center; color: var(--text-muted); grid-column: 1 / -1; font-family: 'Space Mono', monospace;">
+          Loading Execom data...
+        </p>
       </div>
+      
     </div>
   </section>
 
@@ -118,6 +48,58 @@
     </div>
   </footer>
 
-  <script src="scripts.js"></script>
+ <script>
+    // Append ?tab=Execom to your existing script URL
+    const EXECOM_API_URL = 'https://script.google.com/macros/s/AKfycbxkkzGS8mEcLY0qJiwbIPaNBaRO2hbm0Dz-mVj1d4wJdqrTZWrVLJo9F7xFTNqnbP87Lg/exec?tab=Execom'; 
+
+    function getDirectDriveImageUrl(url) {
+      if (!url) return '';
+      const trimmed = url.trim();
+      if (!trimmed.includes('drive.google.com')) return trimmed;
+      const match = trimmed.match(/\/file\/d\/([a-zA-Z0-9-_]+)/) || trimmed.match(/id=([a-zA-Z0-9-_]+)/);
+      if (match && match[1]) {
+        return `https://drive.google.com/thumbnail?sz=w1200&id=${match[1]}`;
+      }
+      return trimmed;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('execomGrid');
+      
+      fetch(EXECOM_API_URL)
+        .then(response => response.json())
+        .then(data => {
+          grid.innerHTML = ''; 
+          
+          data.forEach((member, index) => {
+            // Note: Using lowercase properties (name, role, image, linkedin) 
+            // because your Apps Script maps all headers to lowercase!
+            if(!member.name) return; 
+
+            const imgUrl = getDirectDriveImageUrl(member.image);
+            const delay = (index % 4) * 0.1; 
+
+            const tileHTML = `
+              <div class="execom-card" style="animation: slideFadeIn 0.4s ease-in-out forwards; animation-delay: ${delay}s; opacity: 0;">
+                <div class="execom-photo-wrap">
+                  <img class="execom-photo" src="${imgUrl}" alt="${member.name}" onerror="this.parentElement.innerHTML='<div class=\\'team-photo-placeholder\\'>👨‍💻</div>'">
+                </div>
+                <div class="execom-info">
+                  <div class="execom-name">${member.name}</div>
+                  <div class="execom-role">${member.role}</div>
+                  ${member.linkedin ? `<a class="execom-linkedin" href="${member.linkedin}" target="_blank">🔗 LinkedIn</a>` : ''}
+                </div>
+              </div>
+            `;
+            
+            grid.innerHTML += tileHTML;
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching Execom data:', error);
+          grid.innerHTML = `<p style="text-align: center; color: #ff5252; grid-column: 1 / -1;">Failed to load data. Please check the API connection.</p>`;
+        });
+    });
+  </script>
 </body>
 </html>
