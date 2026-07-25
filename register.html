@@ -37,13 +37,13 @@
         <select id="semester" name="semester" required>
           <option value="" disabled selected>Select your semester</option>
           <option value="S1">S1</option>
-          <!-- <option value="S2">S2</option> -->
+          <option value="S2">S2</option>
           <option value="S3">S3</option>
-          <!-- <option value="S4">S4</option> -->
+          <option value="S4">S4</option>
           <option value="S5">S5</option>
-          <!-- <option value="S6">S6</option> -->
+          <option value="S6">S6</option>
           <option value="S7">S7</option>
-          <!-- <option value="S8">S8</option> -->
+          <option value="S8">S8</option>
         </select>
       </div>
 
@@ -55,7 +55,6 @@
           <option value="EC">EC</option>
           <option value="AE">AE</option>
           <option value="CE">CE</option>
-          <option value="CE">CHE</option>
           <option value="MECH">MECH</option>
         </select>
       </div>
@@ -72,10 +71,8 @@
 
       <button type="submit" id="submitBtn">Submit Registration</button>
     </form>
-    
   </div>
   
-
  <script>
     const urlParams = new URLSearchParams(window.location.search);
     const eventName = urlParams.get('name') || "Event";
@@ -87,6 +84,7 @@
     document.getElementById('eventName').value = eventName;
     document.getElementById('eventCategory').value = eventCategory;
 
+    // Make sure this matches your newly deployed Apps Script URL
     const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxkkzGS8mEcLY0qJiwbIPaNBaRO2hbm0Dz-mVj1d4wJdqrTZWrVLJo9F7xFTNqnbP87Lg/exec'; 
     
     const form = document.getElementById('studentRegisterForm');
@@ -99,14 +97,12 @@
       submitBtn.disabled = true;
       submitBtn.innerText = "Processing submission...";
 
-      const encodedPayload = new URLSearchParams(new FormData(form));
-
       // Send standard FormData without the 'no-cors' blindfold
       fetch(BACKEND_URL, { 
         method: 'POST',
         body: new FormData(form) 
       })
-      .then(res => res.text()) // Now we can actually read the response
+      .then(res => res.text()) // Read the direct text response from the Apps Script
       .then(text => {
         if (text.trim() === "SUCCESS") {
           // Build the success message HTML
@@ -118,6 +114,7 @@
               </p>
           `;
           
+          // Only append the WhatsApp button if a link was provided for this event
           if (waLink && waLink.trim() !== '' && waLink !== 'undefined') {
             successHTML += `
               <p style="color: var(--text); margin-bottom: 15px; font-family: 'Space Mono', monospace; font-size: 0.8rem; letter-spacing: 0.1em;">
@@ -135,7 +132,10 @@
                 text-decoration: none;
                 clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
                 transition: transform 0.2s, box-shadow 0.2s;
-              ">🔗 Join WhatsApp Group</a>
+              " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 20px rgba(37, 211, 102, 0.3)';" 
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                🔗 Join WhatsApp Group
+              </a>
             `;
           }
           
@@ -147,10 +147,11 @@
             </div>
           `;
           
+          // Replace the entire form with the success message
           formWrapper.innerHTML = successHTML;
 
         } else {
-          // If the script returns an error, we will finally see it!
+          // If the script returns an error instead of "SUCCESS"
           console.error("Server Error:", text);
           alert("Database Error: " + text);
           submitBtn.disabled = false;
@@ -161,7 +162,7 @@
         console.error("Network Error:", err.message);
         submitBtn.disabled = false;
         submitBtn.innerText = "Retry Submission";
-        alert("A network error occurred. Please try again.");
+        alert("A network error occurred. Please check your connection and try again.");
       });
     });
   </script>
