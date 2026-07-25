@@ -5,17 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>REGISTER</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    /* Small animation class for the success message transition */
-    @keyframes slideFadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
 </head>
 <body class="register-body-wrapper">
 
-  <div class="form-container" id="formWrapper">
+  <div class="form-container">
     <h2 id="form-title">Student Details Form</h2>
     
     <form id="studentRegisterForm">
@@ -37,13 +30,13 @@
         <select id="semester" name="semester" required>
           <option value="" disabled selected>Select your semester</option>
           <option value="S1">S1</option>
-          <!-- <option value="S2">S2</option> -->
+          <option value="S2">S2</option>
           <option value="S3">S3</option>
-          <!-- <option value="S4">S4</option> -->
+          <option value="S4">S4</option>
           <option value="S5">S5</option>
-          <!-- <option value="S6">S6</option> -->
+          <option value="S6">S6</option>
           <option value="S7">S7</option>
-          <!-- <option value="S8">S8</option> -->
+          <option value="S8">S8</option>
         </select>
       </div>
 
@@ -55,7 +48,6 @@
           <option value="EC">EC</option>
           <option value="AE">AE</option>
           <option value="CE">CE</option>
-          <option value="AE">CHE</option>
           <option value="MECH">MECH</option>
         </select>
       </div>
@@ -72,25 +64,28 @@
 
       <button type="submit" id="submitBtn">Submit Registration</button>
     </form>
+    
+    <p id="successToast" style="color: #00e676; text-align: center; margin-top: 15px; display: none; font-weight: 600; font-family: 'Space Mono', monospace; font-size: 0.85rem;">
+      Registration saved to database matrix!
+    </p>
   </div>
   
-  <script>
+
+ <script>
     const urlParams = new URLSearchParams(window.location.search);
     const eventName = urlParams.get('name') || "Event";
     const eventCategory = urlParams.get('cat') || "Tech";
-    // Extract the WhatsApp link parameter
-    const waLink = urlParams.get('wa');
 
     document.getElementById('form-title').innerText = `Register for ${eventName}`;
     document.getElementById('eventName').value = eventName;
     document.getElementById('eventCategory').value = eventCategory;
 
-    // Make sure this matches your deployed Apps Script URL
+    // FIXED: Pointing to the active operational script ID matching index.html
     const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxkkzGS8mEcLY0qJiwbIPaNBaRO2hbm0Dz-mVj1d4wJdqrTZWrVLJo9F7xFTNqnbP87Lg/exec'; 
     
     const form = document.getElementById('studentRegisterForm');
     const submitBtn = document.getElementById('submitBtn');
-    const formWrapper = document.getElementById('formWrapper');
+    const toast = document.getElementById('successToast');
 
     form.addEventListener('submit', event => {
       event.preventDefault();
@@ -98,10 +93,8 @@
       submitBtn.disabled = true;
       submitBtn.innerText = "Processing submission...";
 
-      // Re-encode the payload exactly as Google Apps Script expects it
       const encodedPayload = new URLSearchParams(new FormData(form));
 
-      // Put 'no-cors' back so the browser doesn't block the request!
       fetch(BACKEND_URL, { 
         method: 'POST',
         mode: 'no-cors',
@@ -109,73 +102,33 @@
         body: encodedPayload 
       })
       .then(res => {
-        // Since we are using no-cors, the request resolving means it successfully sent the data
+        submitBtn.innerText = "Submitted Successfully!";
+        toast.style.display = "block";
+        form.reset();
         
-        let successHTML = `
-          <div style="text-align: center; padding: 30px 10px; animation: slideFadeIn 0.5s ease-out;">
-            <h2 style="color: var(--lavender); font-family: 'Playfair Display', serif; margin-bottom: 15px; font-size: 2rem;">Registration Successful! 🎉</h2>
-            <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 30px;">
-              Your details for <strong>${eventName}</strong> have been securely recorded. Thank you for signing up!
-            </p>
-        `;
-        
-        // Add WhatsApp button if link exists
-        if (waLink && waLink.trim() !== '' && waLink !== 'undefined') {
-          successHTML += `
-            <p style="color: var(--text); margin-bottom: 15px; font-family: 'Space Mono', monospace; font-size: 0.8rem; letter-spacing: 0.1em;">
-              FOLLOW FOR MORE UPDATES:
-            </p>
-            <a href="${waLink}" target="_blank" style="
-              display: inline-block;
-              font-family: 'Space Mono', monospace;
-              font-size: 0.8rem;
-              text-transform: uppercase;
-              padding: 14px 28px;
-              background: #25D366;
-              color: #000;
-              font-weight: bold;
-              text-decoration: none;
-              clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-              transition: transform 0.2s, box-shadow 0.2s;
-            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 20px rgba(37, 211, 102, 0.3)';" 
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-              🔗 Join WhatsApp Group
-            </a>
-          `;
-        }
-        
-        successHTML += `
-            <br><br>
-            <a href="index.html" style="color: var(--lavender); font-family: 'Space Mono', monospace; font-size: 0.75rem; text-decoration: none; border-bottom: 1px solid var(--border-soft); margin-top: 30px; display: inline-block;">
-              &larr; Return to Homepage
-            </a>
-          </div>
-        `;
-        
-        // Render success message
-        formWrapper.innerHTML = successHTML;
+        document.getElementById('eventName').value = eventName;
+        document.getElementById('eventCategory').value = eventCategory;
       })
       .catch(err => {
-        console.error("Network Error:", err.message);
+        console.error("Error logging submission:", err.message);
         submitBtn.disabled = false;
         submitBtn.innerText = "Retry Submission";
-        alert("A network error occurred. Please try again.");
       });
     });
   </script>
-
-  <!-- Sidharth P. Signature Widget - Interactive Circle Capsule -->
-  <div class="sidharth-signature-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; display: flex; align-items: center; flex-direction: row-reverse; gap: 0px; cursor: pointer;" onmouseenter="this.querySelector('.sig-text-slide').style.width='180px'; this.querySelector('.sig-text-slide').style.padding='0 15px 0 20px'; this.querySelector('.sig-text-slide').style.opacity='1'; this.querySelector('.sig-text-slide').style.marginRight='-15px'; this.querySelector('.sig-icon-ring').style.transform='rotate(360deg)'; this.querySelector('.sig-icon-ring').style.borderColor='#b06bff';" onmouseleave="this.querySelector('.sig-text-slide').style.width='0px'; this.querySelector('.sig-text-slide').style.padding='0'; this.querySelector('.sig-text-slide').style.opacity='0'; this.querySelector('.sig-text-slide').style.marginRight='0px'; this.querySelector('.sig-icon-ring').style.transform='rotate(0deg)'; this.querySelector('.sig-icon-ring').style.borderColor='rgba(176,107,255,0.3)';">
-    
-    <!-- The Master Font Circle Ring -->
-    <div class="sig-icon-ring" style="width: 42px; height: 42px; background: #130020; border: 2px solid rgba(176,107,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(0,0,0,0.6); position: relative; z-index: 2; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.4s ease;">
-      <span style="font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.4rem; color: #d4b0ff; line-height: 1; text-shadow: 0 0 10px rgba(176,107,255,0.5); transform: translateY(-1px);">S</span>
-    </div>
-
-    <!-- Sliding Interactive Text Capsule -->
-    <div class="sig-text-slide" style="width: 0px; height: 34px; background: rgba(26,0,48,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(176,107,255,0.2); border-radius: 20px 0 0 20px; display: flex; align-items: center; justify-content: center; white-space: nowrap; opacity: 0; overflow: hidden; transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); z-index: 1;">
-      <span style="font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #ede0ff; letter-spacing: 0.08em; text-transform: uppercase;">Crafted by <strong style="color: #fff; font-family: 'Outfit', sans-serif; font-weight: 600;">Sidharth</strong></span>
-    </div>
+<!-- Sidharth P. Signature Widget - Interactive Circle Capsule -->
+<div class="sidharth-signature-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; display: flex; align-items: center; flex-direction: row-reverse; gap: 0px; cursor: pointer;" onmouseenter="this.querySelector('.sig-text-slide').style.width='180px'; this.querySelector('.sig-text-slide').style.padding='0 15px 0 20px'; this.querySelector('.sig-text-slide').style.opacity='1'; this.querySelector('.sig-text-slide').style.marginRight='-15px'; this.querySelector('.sig-icon-ring').style.transform='rotate(360deg)'; this.querySelector('.sig-icon-ring').style.borderColor='#b06bff';" onmouseleave="this.querySelector('.sig-text-slide').style.width='0px'; this.querySelector('.sig-text-slide').style.padding='0'; this.querySelector('.sig-text-slide').style.opacity='0'; this.querySelector('.sig-text-slide').style.marginRight='0px'; this.querySelector('.sig-icon-ring').style.transform='rotate(0deg)'; this.querySelector('.sig-icon-ring').style.borderColor='rgba(176,107,255,0.3)';">
+  
+  <!-- The Master Font Circle Ring -->
+  <div class="sig-icon-ring" style="width: 42px; height: 42px; background: #130020; border: 2px solid rgba(176,107,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(0,0,0,0.6); position: relative; z-index: 2; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.4s ease;">
+    <span style="font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.4rem; color: #d4b0ff; line-height: 1; text-shadow: 0 0 10px rgba(176,107,255,0.5); transform: translateY(-1px);">S</span>
   </div>
+
+  <!-- Sliding Interactive Text Capsule -->
+  <div class="sig-text-slide" style="width: 0px; height: 34px; background: rgba(26,0,48,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(176,107,255,0.2); border-radius: 20px 0 0 20px; display: flex; align-items: center; justify-content: center; white-space: nowrap; opacity: 0; overflow: hidden; transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); z-index: 1;">
+    <span style="font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #ede0ff; letter-spacing: 0.08em; text-transform: uppercase;">Crafted by <strong style="color: #fff; font-family: 'Outfit', sans-serif; font-weight: 600;">Sidharth</strong></span>
+  </div>
+</div>
+</div>
 </body>
 </html>
