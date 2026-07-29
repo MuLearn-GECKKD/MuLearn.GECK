@@ -39,15 +39,22 @@
 </head>
 <body>
 
-  <nav>
-    <a class="nav-brand" href="#home">µLearn <span>GECK</span></a>
-    <ul class="nav-links">
+ <nav>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <div class="hamburger" id="mobile-menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <a class="nav-brand" href="#home">µLearn <span>GECK</span></a>
+    </div>
+    
+    <ul class="nav-links" id="nav-menu">
       <li><a href="#home">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#events">Events</a></li>
       <li><a href="#achievements">Achievements</a></li>
       <li><a href="#team">Team</a></li>
-      <li><a href="execom.html">Execom</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a class="nav-cta" href="https://mulearn.org" target="_blank">Join MuLearn</a>
@@ -345,6 +352,13 @@
       const filteredData = allEventsCached.filter(event => {
         const eventDateStr = String(event.date || '');
         return eventDateStr.includes(activeYearFilter);
+      // Determine button action based on the 'registration link' column
+      const encodedWaLink = encodeURIComponent(event['whatsapp link'] || '');
+      let buttonAction = `window.location.href='register.html?name=${encodedName}&cat=${encodedCat}&wa=${encodedWaLink}'`;
+        
+      if (event['registration link'] && event['registration link'].trim().startsWith('http')) {
+          buttonAction = `window.open('${event['registration link'].trim()}', '_blank')`;
+        }
       });
 
       if(filteredData.length === 0) {
@@ -488,6 +502,11 @@
       updateSliderDOM(0);
     }
   </script>
-  <script src="scripts.js"></script>
+  <script src="scripts.js">
+    // Hamburger menu toggle logic
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+      document.getElementById('nav-menu').classList.toggle('show-mobile-menu');
+    });
+  </script>
 </body>
 </html>
