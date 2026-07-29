@@ -73,15 +73,15 @@
   
 
  <script>
-    const urlParams = new URLSearchParams(window.location.search);
+   const urlParams = new URLSearchParams(window.location.search);
     const eventName = urlParams.get('name') || "Event";
     const eventCategory = urlParams.get('cat') || "Tech";
+    const waLink = urlParams.get('wa') || ""; // Grab WhatsApp link
 
     document.getElementById('form-title').innerText = `Register for ${eventName}`;
     document.getElementById('eventName').value = eventName;
     document.getElementById('eventCategory').value = eventCategory;
 
-    // FIXED: Pointing to the active operational script ID matching index.html
     const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbzbwufTkcekzgkhOW8t8na_vUFSQLcfAxVDjpodqTwgEGR9dukJ_7v2Ga7ob1SZRB_E/exec'; 
     
     const form = document.getElementById('studentRegisterForm');
@@ -104,6 +104,14 @@
       })
       .then(res => {
         submitBtn.innerText = "Submitted Successfully!";
+        
+        // Show WhatsApp link if it exists
+        if (waLink) {
+          toast.innerHTML = `Registration successful! <br><a href="${waLink}" target="_blank" style="color: #00f2fe; text-decoration: underline; display: inline-block; margin-top: 10px;">👉 Join the WhatsApp Group</a>`;
+        } else {
+          toast.innerHTML = `Registration saved to database matrix!`;
+        }
+        
         toast.style.display = "block";
         form.reset();
         
