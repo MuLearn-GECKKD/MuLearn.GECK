@@ -6,7 +6,7 @@
   <title>µLearn GEC Kozhikode – Official Website</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Year Filter Tab Styling to match your website's purple cyber aesthetic */
+    /* Year Filter Tab Styling */
     .year-filter-tabs {
       display: flex;
       gap: 15px;
@@ -35,20 +35,66 @@
       border-color: var(--purple-mid);
       box-shadow: 0 0 15px rgba(123,47,247,0.3);
     }
+
+    /* Mobile Hamburger Nav Styling */
+    .menu-toggle-btn {
+      display: none;
+      font-size: 1.5rem;
+      color: var(--lavender);
+      cursor: pointer;
+      user-select: none;
+      background: none;
+      border: none;
+      padding: 5px;
+    }
+    .nav-left-cluster {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    @media (max-width: 900px) {
+      .menu-toggle-btn {
+        display: block; /* Show on mobile */
+      }
+      .nav-links {
+        display: none; /* Hide standard nav on mobile */
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(14,0,24,0.95);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border-bottom: 1px solid var(--border);
+        padding: 20px 0;
+        text-align: center;
+      }
+      .nav-links.active {
+        display: flex !important;
+      }
+    }
   </style>
 </head>
 <body>
 
   <nav>
-    <a class="nav-brand" href="#home">µLearn <span>GECK</span></a>
-    <ul class="nav-links">
+    <div class="nav-left-cluster">
+      <!-- 3 Horizontal Bars Icon -->
+      <button class="menu-toggle-btn" id="mobileMenuBtn" aria-label="Toggle Navigation">☰</button>
+      <a class="nav-brand" href="#home">µLearn <span>GECK</span></a>
+    </div>
+    
+    <ul class="nav-links" id="navLinksMenu">
       <li><a href="#home">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#events">Events</a></li>
       <li><a href="#achievements">Achievements</a></li>
       <li><a href="#team">Team</a></li>
-      <!-- <li><a href="execom.html">Execom</a></li> -->
+      <li><a href="execom.html">Execom</a></li>
       <li><a href="#contact">Contact</a></li>
+      
     </ul>
     <a class="nav-cta" href="https://mulearn.org" target="_blank">Join MuLearn</a>
   </nav>
@@ -165,12 +211,25 @@
           </div>
           <div class="highlight-item">
             <div class="highlight-num">03</div>
-            <div class="highlight-text"><strong>🤖 Nourin — AI Interest Group Lead 2025</strong> at µLearn Foundation, representing GECK nationally and driving AI-focused initiatives.</div>
+            <div class="highlight-text"><strong>🛡️ Arniteja Vijay — District Lead for Cybersecurity IG 2026</strong> at µLearn Foundation, strengthening cybersecurity communities and leading cybersecurity initiatives across the district.</div>
           </div>
           <div class="highlight-item">
             <div class="highlight-num">04</div>
-            <div class="highlight-text"><strong>🏗️ Nidhi Ashok — Civil IG Lead 2025</strong> at µLearn Foundation, championing civil engineering innovation on a national stage.</div>
+            <div class="highlight-text"><strong>🤖 Nourin — AI Interest Group Lead 2025</strong> at µLearn Foundation, representing GECK and driving AI-focused initiatives.</div>
           </div>
+          <div class="highlight-item">
+            <div class="highlight-num">05</div>
+            <div class="highlight-text"><strong>📱 Amal Shaheen — Mobile Development IG Lead 2025</strong> at µLearn Foundation, empowering learners to build impactful mobile applications and grow as developers.</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-num">06</div>
+            <div class="highlight-text"><strong>🏗️ Nidhi Ashok — Civil IG Lead 2025</strong> at µLearn Foundation, championing civil engineering innovation on a state Level.</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-num">07</div>
+            <div class="highlight-text"><strong>🤖 Sandre Alex — Former AI IG Lead 2025</strong> at µLearn Foundation, driving innovation and fostering AI learning across the community.</div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -244,9 +303,16 @@
           <div class="contact-item">
             <div class="contact-icon">🌐</div>
             <div>
-              <div class="contact-label">Web Administrator</div>
+              <div class="contact-label">Web Creator</div>
               <div class="contact-value">Nandana K — <a href="mailto:nandanak@gmail.com">nandanak@gmail.com</a></div>
             </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🌐</div>
+            <div>
+              <div class="contact-label">Web Administrator</div>
+              <div class="contact-value">Devamithra P E - <a href="mailto:devamithrape404@gmail.com">devamithrape404@gmail.com</a></div>
+           </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon">🌐</div>
@@ -281,10 +347,25 @@
   </footer>
 
   <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkkzGS8mEcLY0qJiwbIPaNBaRO2hbm0Dz-mVj1d4wJdqrTZWrVLJo9F7xFTNqnbP87Lg/exec';
+    // --- Mobile Menu Toggle Logic ---
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.getElementById('navLinksMenu');
+
+    menuBtn.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+
+    // Close the menu automatically when a link is clicked
+    document.querySelectorAll('#navLinksMenu a').forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+      });
+    });
+
+    // --- Dynamic Content Logic ---
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbwufTkcekzgkhOW8t8na_vUFSQLcfAxVDjpodqTwgEGR9dukJ_7v2Ga7ob1SZRB_E/exec';
     const track = document.getElementById('slidesTrack');
     
-    // Master data arrays for multi-year scope management
     let allEventsCached = [];
     let activeYearFilter = '2026';
 
@@ -299,12 +380,10 @@
       return trimmed;
     }
 
-    // Network ingestion pipeline
     fetch(SCRIPT_URL)
       .then(res => res.json())
       .then(data => {
         allEventsCached = data || [];
-        // Render the default tab (2026) immediately upon successful download
         renderFilteredCarousel();
       })
       .catch(err => {
@@ -312,19 +391,14 @@
         track.innerHTML = `<p style="text-align:center; color:#ff5252; width:100%; padding:40px;">Failed to synchronize live event cards.</p>`;
       });
 
-    // Filtering handler linked directly to sub-tab button elements
     function filterEventsByYear(year, buttonElement) {
       activeYearFilter = year;
-      
-      // Update visual active styling across tab buttons
       document.querySelectorAll('.year-tab-btn').forEach(btn => btn.classList.remove('active'));
       buttonElement.classList.add('active');
-      
       renderFilteredCarousel();
     }
 
     function renderFilteredCarousel() {
-      // Filter array on the fly based on whether the date string contains '2025' or '2026'
       const filteredData = allEventsCached.filter(event => {
         const eventDateStr = String(event.date || '');
         return eventDateStr.includes(activeYearFilter);
@@ -346,9 +420,11 @@
         const assetImg = getDirectDriveImageUrl(event.imageurl || event.image);
         const encodedName = encodeURIComponent(event.name);
         const encodedCat = encodeURIComponent(event.category);
+        
+        // Grab the WhatsApp Link from the sheet (fallback to 'whatsapp' header if named differently)
+        const rawWaLink = event['whatsapp link'] || event['whatsapp'] || '';
+        const encodedWa = encodeURIComponent(rawWaLink.trim());
 
-        // Real-time date boundary checking loop logic
-       // Check for expiration first
         let isExpired = false;
         if (event.deadline) {
           const deadlineDate = new Date(event.deadline);
@@ -358,14 +434,13 @@
           }
         }
 
-        // Determine button action based on the 'registration link' column
-        let buttonAction = `window.location.href='register.html?name=${encodedName}&cat=${encodedCat}'`;
+        // Add the WhatsApp parameter to the registration URL payload
+        let buttonAction = `window.location.href='register.html?name=${encodedName}&cat=${encodedCat}&wa=${encodedWa}'`;
         
         if (event['registration link'] && event['registration link'].trim().startsWith('http')) {
             buttonAction = `window.open('${event['registration link'].trim()}', '_blank')`;
         }
 
-        // Generate the final button HTML
         const actionButtonHTML = isExpired 
           ? `<button class="register-btn" disabled style="background: rgba(255,255,255,0.05); color: var(--text-muted); border-color: var(--border-soft); cursor: not-allowed; transform: none; box-shadow: none;">Closed</button>`
           : `<button class="register-btn" onclick="${buttonAction}">Register</button>`;
@@ -400,7 +475,6 @@
         track.innerHTML += slideHTML;
       });
 
-      // Clear existing listeners by initializing a brand new structural instance loop
       initCarouselEngine(totalSlides);
     }
 
@@ -428,14 +502,12 @@
         });
       }
 
-      // Safeguard global click pipeline configuration
       if (!window.carouselListenerConfigured) {
         document.addEventListener('click', function(e) {
           const slides = document.querySelectorAll('.slide');
           const localTotal = slides.length;
           if(localTotal <= 1) return;
 
-          // Find current active slide index manually
           let activeIdx = 0;
           slides.forEach((s, idx) => { if(s.classList.contains('active')) activeIdx = idx; });
 

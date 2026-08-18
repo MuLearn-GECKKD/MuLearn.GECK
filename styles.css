@@ -796,6 +796,45 @@ footer {
 /* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
   nav { padding: 16px 20px; }
+  /* Hide standard nav by default */
+  .nav-links { 
+    display: none; 
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 8px;
+    gap: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  }
+  
+  /* Class added via JS to show menu */
+  .nav-links.show-mobile-menu {
+    display: flex !important;
+  }
+
+  /* Hamburger Menu Styling */
+  .hamburger {
+    display: flex !important;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  .hamburger span {
+    width: 25px;
+    height: 3px;
+    background: var(--lavender);
+    border-radius: 2px;
+  }
+
+  .wrap { padding: 70px 20px; }
+  .about-layout, .achievements-layout, .contact-layout { grid-template-columns: 1fr; gap: 36px; }
+  /* ... keep your remaining existing media queries here ... */
+  
   .nav-links { display: none; }
   .wrap { padding: 70px 20px; }
   .about-layout, .achievements-layout, .contact-layout { grid-template-columns: 1fr; gap: 36px; }
